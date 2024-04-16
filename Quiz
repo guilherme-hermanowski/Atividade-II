@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .quiz-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .quiz {
+            margin-bottom: 20px;
+        }
+        .question {
+            margin-bottom: 10px;
+        }
+        .options {
+            list-style-type: none;
+            padding-left: 0;
+        }
+        .options li {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+    <div class="quiz-container">
+        <div class="quiz" id="database-quiz">
+            <h2>Quiz de Banco de Dados</h2>
+        </div>
+        <div class="quiz" id="oop-quiz">
+            <h2>Quiz de Programação Orientada a Objetos</h2>
+        </div>
+        <div class="quiz" id="webtech-quiz">
+            <h2>Quiz de HTML, CSS e JavaScript</h2>
+        </div>
+        <button onclick="calculateScore()">Ver resultado</button>
+    </div>
+
+    <script>
+        const quizzes = {
+            database: [
+                {
+                    question: "Qual desses é um tipo de banco de dados não relacional?",
+                    options: ["SQL", "MySQL", "NoSQL"],
+                    answer: 2
+                },
+                {
+                    question: "Qual é a linguagem mais comum para interagir com bancos de dados relacionais?",
+                    options: ["Ruby", "SQL", "JavaScript"],
+                    answer: 1
+                }
+            ],
+            oop: [
+                {
+                    question: "O que é herança na programação orientada a objetos?",
+                    options: ["É a capacidade de uma classe herdar métodos e propriedades de outra classe.", "É a capacidade de uma classe criar instâncias de outras classes.", "É a capacidade de uma classe ser abstrata."],
+                    answer: 0
+                },
+                {
+                    question: "O que é encapsulamento?",
+                    options: ["É o processo de tornar um objeto privado.", "É o processo de agrupar dados e métodos em um único objeto.", "É o processo de criar objetos a partir de classes."],
+                    answer: 1
+                }
+            ],
+            webtech: [
+                {
+                    question: "O que o HTML é?",
+                    options: ["Uma linguagem de marcação", "Uma linguagem de programação", "Um tipo de banco de dados"],
+                    answer: 0
+                },
+                {
+                    question: "Qual linguagem é utilizada para criar aplicações em páginas da web?",
+                    options: ["Java", "JavaScript", "Python"],
+                    answer: 1
+                }
+            ]
+        };
+
+        function createQuizElement(quizData) {
+            const quizElement = document.createElement('div');
+            quizElement.classList.add('question');
+            quizElement.innerHTML = `
+                <h3>${quizData.question}</h3>
+                <ul class="options">
+                    ${quizData.options.map((option, index) => `<li><input type="radio" name="${quizData.question}" value="${index}">${option}</li>`).join('')}
+                </ul>
+            `;
+            return quizElement;
+        }
+
+        function calculateScore() {
+            const databaseAnswers = document.querySelectorAll('#database-quiz input[type="radio"]:checked');
+            const oopAnswers = document.querySelectorAll('#oop-quiz input[type="radio"]:checked');
+            const webtechAnswers = document.querySelectorAll('#webtech-quiz input[type="radio"]:checked');
+
+            const score = calculateQuizScore(databaseAnswers, quizzes.database) +
+                          calculateQuizScore(oopAnswers, quizzes.oop) +
+                          calculateQuizScore(webtechAnswers, quizzes.webtech);
+
+            alert(`Sua pontuação foi de: ${score}/6`);
+        }
+
+        function calculateQuizScore(answers, quizData) {
+            let score = 0;
+            answers.forEach(answer => {
+                const questionIndex = quizData.findIndex(q => q.question === answer.name);
+                const selectedOption = parseInt(answer.value);
+                if (questionIndex !== -1 && selectedOption === quizData[questionIndex].answer) {
+                    score++;
+                }
+            });
+            return score;
+        }
+
+        function displayQuizzes() {
+            const databaseQuizContainer = document.getElementById('database-quiz');
+            const oopQuizContainer = document.getElementById('oop-quiz');
+            const webtechQuizContainer = document.getElementById('webtech-quiz');
+
+            quizzes.database.forEach(quizData => {
+                const quizElement = createQuizElement(quizData);
+                databaseQuizContainer.appendChild(quizElement);
+            });
+
+            quizzes.oop.forEach(quizData => {
+                const quizElement = createQuizElement(quizData);
+                oopQuizContainer.appendChild(quizElement);
+            });
+
+            quizzes.webtech.forEach(quizData => {
+                const quizElement = createQuizElement(quizData);
+                webtechQuizContainer.appendChild(quizElement);
+            });
+        }
+
+        displayQuizzes();
+    </script>
+</body>
+</html>
